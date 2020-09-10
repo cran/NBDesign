@@ -37,8 +37,11 @@ ynegbinomsize<-function(r0=1.0,r1=0.5,shape0=1,shape1=shape0,pi1=0.5,alpha=0.05,
   if (type==1){
     exposure<-fixedfu
     SDexp<-0
-    a<-shape0*r0*exposure[1];a<-a/(1+a);a<-pi0/shape0*a
-    b<-shape1*r1*exposure[2];b<-b/(1+b);b<-pi1/shape1*b
+    if (shape0==0){a=pi0*r0*exposure[1]}
+    else {a<-shape0*r0*exposure[1];a<-a/(1+a);a<-pi0/shape0*a}
+    if (shape1==0){b<-pi1*r1*exposure[2]}
+    else {b<-shape1*r1*exposure[2];b<-b/(1+b);b<-pi1/shape1*b}
+    
     mta<-a
     mtb<-b
     V1<-1/a+1/b
@@ -47,10 +50,13 @@ ynegbinomsize<-function(r0=1.0,r1=0.5,shape0=1,shape1=shape0,pi1=0.5,alpha=0.05,
       ###j=1,estimate V0 under H0: r0=r1=r
       ###j=2, estimate V0 under alternative
       ###j=3, estimate V0 using MLE
-      anull<-shape0*tilder0[j]*exposure[1];anull<-anull/(1+anull);anull<-pi0/shape0*anull
-      bnull<-shape1*tilder1[j]*exposure[2];bnull<-bnull/(1+bnull);bnull<-pi1/shape1*bnull
+      if (shape0==0){anull<-pi0*tilder0[j]*exposure[1]}
+      else {anull<-shape0*tilder0[j]*exposure[1];anull<-anull/(1+anull);anull<-pi0/shape0*anull}
+      if (shape1==0){bnull<-pi1*tilder1[j]*exposure[2]}
+      else {bnull<-shape1*tilder1[j]*exposure[2];bnull<-bnull/(1+bnull);bnull<-pi1/shape1*bnull}
+      
       mtanull=anull
-      mtanull=bnull
+      mtbnull=bnull
       V0<-1/anull+1/bnull
       tildeV0<-1/mtanull+1/mtbnull
       tildeXN[j]<-(qalpha*sqrt(tildeV0)+qbeta*sqrt(tildeV1))^2/eff2
@@ -60,14 +66,17 @@ ynegbinomsize<-function(r0=1.0,r1=0.5,shape0=1,shape1=shape0,pi1=0.5,alpha=0.05,
   else {
     abc0=negint2(ux=r0*shape0,fixedfu=fixedfu,type=type,u=u,ut=ut,tfix=tfix,maxfu=maxfu,tchange=tchange,ratec=ratec0,eps=eps)
     abc1=negint2(ux=r1*shape1,fixedfu=fixedfu,type=type,u=u,ut=ut,tfix=tfix,maxfu=maxfu,tchange=tchange,ratec=ratec1,eps=eps)
+    
     exposure[1]=abc0$tt;SDexp[1]=sqrt(abc0$vt)
     exposure[2]=abc1$tt;SDexp[2]=sqrt(abc1$vt)
     exposure[3]=pi0*exposure[1]+pi1*exposure[2]
     SDexp[3]=pi0*SDexp[1]+pi1*SDexp[2]
-    a<-shape0*r0*exposure[1];a<-a/(1+a);a<-pi0/shape0*a
-    b<-shape1*r1*exposure[2];b<-b/(1+b);b<-pi1/shape1*b
-    mta<-pi0/shape0*abc0$mt
-    mtb<-pi1/shape1*abc1$mt
+    
+    if (shape0==0){a<-pi0*r0*exposure[1];mta=a}
+    else {a<-shape0*r0*exposure[1];a<-a/(1+a);a<-pi0/shape0*a;mta<-pi0/shape0*abc0$mt}
+    if (shape1==0){b<-pi1*r1*exposure[2];mtb=b}
+    else {b<-shape1*r1*exposure[2];b<-b/(1+b);b<-pi1/shape1*b;mtb<-pi1/shape1*abc1$mt}
+    
     V1<-1/a+1/b
     tildeV1<-1/mta+1/mtb
     for (j in 1:3){
@@ -76,10 +85,12 @@ ynegbinomsize<-function(r0=1.0,r1=0.5,shape0=1,shape1=shape0,pi1=0.5,alpha=0.05,
       ###j=3, estimate V0 using MLE
       def0=negint2(ux=tilder0[j]*shape0,fixedfu=fixedfu,type=type,u=u,ut=ut,tfix=tfix,maxfu=maxfu,tchange=tchange,ratec=ratec0,eps=eps)
       def1=negint2(ux=tilder1[j]*shape1,fixedfu=fixedfu,type=type,u=u,ut=ut,tfix=tfix,maxfu=maxfu,tchange=tchange,ratec=ratec1,eps=eps)
-      anull<-shape0*tilder0[j]*exposure[1];anull<-anull/(1+anull);anull<-pi0/shape0*anull
-      bnull<-shape1*tilder1[j]*exposure[2];bnull<-bnull/(1+bnull);bnull<-pi1/shape1*bnull
-      mtanull<-pi0/shape0*def0$mt
-      mtbnull<-pi1/shape1*def1$mt
+
+      if (shape0==0){anull<-pi0*tilder0[j]*exposure[1];mtanull=anull}
+      else {anull<-shape0*tilder0[j]*exposure[1];anull<-anull/(1+anull);anull<-pi0/shape0*anull;mtanull<-pi0/shape0*def0$mt}
+      if (shape1==0){bnull<-pi1*tilder1[j]*exposure[2];mtbnull=bnull}
+      else {bnull<-shape1*tilder1[j]*exposure[2];bnull<-bnull/(1+bnull);bnull<-pi1/shape1*bnull;mtbnull<-pi1/shape1*def1$mt}
+      
       V0<-1/anull+1/bnull
       tildeV0<-1/mtanull+1/mtbnull
       tildeXN[j]<-(qalpha*sqrt(tildeV0)+qbeta*sqrt(tildeV1))^2/eff2

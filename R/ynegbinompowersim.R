@@ -41,16 +41,16 @@ ynegbinompowersim<-function(nsize=200,r0=1.0,r1=0.5,shape0=1,shape1=shape0,pi1=0
       rt1<-pmin(rpwe(n1,rate=ratec1,tchange=tchange)$r,eu1)
       rt0<-pmin(rpwe(n0,rate=ratec0,tchange=tchange)$r,eu0)
     }
-    a0=1/(1+r0*shape0*rt0);a1=1/(1+r1*shape1*rt1)
-    rneg0=rnbinom(n0,size=1/shape0,prob=a0)
-    rneg1=rnbinom(n1,size=1/shape1,prob=a1)
+    
+    if (shape0==0){rneg0=rpois(n0,lambda=r0)}
+    else {a0=1/(1+r0*shape0*rt0);rneg0=rnbinom(n0,size=1/shape0,prob=a0)}
+    if (shape1==0){rneg1=rpois(n1,lambda=r1)}
+    else {a1=1/(1+r1*shape1*rt1);rneg1=rnbinom(n1,size=1/shape1,prob=a1)}
     yy[zz==1]=rneg1;yy[zz==0]=rneg0
     tneg[zz==1]=rt1;tneg[zz==0]=rt0
-    #abc0=negml(yy,zz,tt=tneg)
-    #abc <- glm.nb(yy ~ zz+offset(log(tneg)),start=c(abc0$beta,abc0$gamma),init.theta=abc0$k,control=glm.control(maxit=0))
-    abc <- glm.nb(yy ~ zz+offset(log(tneg)),start=c(log(r0),log(r1/r0)),init.theta=1/shape0,control=glm.control(maxit=30)) 
+    abc <- glm.nb(yy ~ zz+offset(log(tneg)),start=c(log(r0),log(r1/r0)),init.theta=1,control=glm.control(maxit=30)) 
     #if (abc$theta.warn=="iteration limit reached"){
-    #   abc<-glm(yy ~ zz+offset(log(tneg)),family=poisson)
+    #   abc<-glm(yy ~ zz+offset(log(tneg)),family="poisson")
     #}
     wtest[r]=summary(abc)$coefficients[2,1]/summary(abc)$coefficients[2,2]
   }

@@ -1,10 +1,10 @@
-0c60df7eabb244f0a90dc684d281af72 *DESCRIPTION
-2b9c312d08f85161c7f58a0d4d2714af *NAMESPACE
+afe5f4a7cff0f55d16a859454d049fd5 *DESCRIPTION
+ec9ffaa3da3fe3276b69e78146bbedec *NAMESPACE
 54747bc9754ec5e958dd72d823dce66c *R/negint2.R
-f17e4c0f685d7cea9a524cc32b3cb9a7 *R/ynegbinompower.R
-c2d6ecb88ce1046b7f74f8d538e58a52 *R/ynegbinompowersim.R
-745c6e570f1d3b26efa66b0277b9ebfa *R/ynegbinomsize.R
-b776e6e9b613a578150a3e7d8cfa5a4c *build/partial.rdb
+1d649e9519604a6c193af59283603fb5 *R/ynegbinompower.R
+e4cbc7995019c0000251713f2985842a *R/ynegbinompowersim.R
+93baf08a4226243351c7650759c26025 *R/ynegbinomsize.R
+037dadbb41c7feeb9f107f85276592ef *build/partial.rdb
 6a08ed6908c437dabf0a91f028632fce *man/NBDesign-package.Rd
 82a90b030f43e0bbe237dcd9265f7c9b *man/negint2.Rd
 a8b9af9601ceaaa1fed832533c2001c3 *man/ynegbinompower.Rd
